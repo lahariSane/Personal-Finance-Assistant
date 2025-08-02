@@ -1,0 +1,18 @@
+# Global ignores
+.DS_Store
+*.log
+
+# Backend
+/backend/node_modules/
+/backend/.env
+/backend/dist/
+
+# Frontend
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
+*.sw?
