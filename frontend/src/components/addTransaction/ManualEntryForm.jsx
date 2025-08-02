@@ -3,7 +3,7 @@ import TransactionTabNavigation from "./TransactionTabNavigation";
 import TransactionFormFields from "./TransactionFormFields";
 import TransactionFormActions from "./TransactionFormActions";
 import SuccessMessage from "./SuccessMessage";
-import ErrorAlert from "./ErrorAlert";
+import ErrorAlert from "../ErrorAlert";
 
 const ManualEntryForm = ({
   activeTab,

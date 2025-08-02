@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import useTransactionStore from "../store/transactionStore";
 import ReceiptUpload from "../components/addTransaction/ReceiptUpload";
+import ManualEntryForm from "../components/addTransaction/ManualEntryForm";
 import {
   validateTransactionForm,
   formatTransactionData,
