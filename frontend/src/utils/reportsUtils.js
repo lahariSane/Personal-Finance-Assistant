@@ -131,11 +131,6 @@ export const getPaymentMethods = (transactions) => {
     methodTotals[method] += transaction.amount || 0;
   });
 
-  console.log("Payment Method Totals:", Object.entries(methodTotals).map(([method, amount]) => ({
-    method,
-    amount,
-  }) || []));
-
   return Object.entries(methodTotals).map(([method, amount]) => ({
     method,
     amount,

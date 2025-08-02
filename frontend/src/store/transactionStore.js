@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "../utils/axios";
+import AddTransaction from "../pages/AddTransaction";
 
 const useTransactionStore = create((set, get) => ({
   loading: false,
@@ -37,6 +38,27 @@ const useTransactionStore = create((set, get) => ({
       }
     } catch (error) {
       set({ error: "Failed to load transaction data" });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  addTransaction: async (transaction) => {
+    set({ loading: true, error: "" });
+    try {
+      const response = await axios.post("/api/transactions", transaction);
+      if (response.data.success) {
+        set((state) => ({
+          transactions: [response.data.data, ...state.transactions],
+          success: "Transaction added successfully!",
+        }));
+      } else {
+        set({ error: response.data.message || "Failed to add transaction" });
+      }
+    } catch (error) {
+      set({
+        error: error.response?.data?.message || "Failed to add transaction",
+      });
     } finally {
       set({ loading: false });
     }
@@ -116,7 +138,7 @@ const useTransactionStore = create((set, get) => ({
       error: "",
     }),
 
-  selectTransaction : (transactionId) =>
+  selectTransaction: (transactionId) =>
     set((state) => ({
       selectedTransactions: state.selectedTransactions.includes(transactionId)
         ? state.selectedTransactions.filter((id) => id !== transactionId)
@@ -212,6 +234,14 @@ const useTransactionStore = create((set, get) => ({
       set({ loading: false });
     }
   },
+
+  resetFormData: (initialData) =>
+    set({
+      formData: initialData,
+      activeTab: "expense",
+      success: "",
+      error: "",
+    }),
 
   // Reset extracted data
   resetExtracted: () =>

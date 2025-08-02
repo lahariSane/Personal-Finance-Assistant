@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import useTransactionStore from "../store/transactionStore";
@@ -12,6 +13,7 @@ import {
 } from "../utils/transactionValidation";
 
 const AddTransaction = () => {
+  const navigate = useNavigate();
   const [entryMode, setEntryMode] = useState("none"); // NEW
   const [activeTab, setActiveTab] = useState("expense");
   const [formData, setFormData] = useState(getInitialFormData());
@@ -19,6 +21,7 @@ const AddTransaction = () => {
   const { user } = useAuthStore();
 
   const {
+    addTransaction,
     extractFromReceipt,
     bulkUpload,
     resetMessages,
@@ -30,6 +33,7 @@ const AddTransaction = () => {
     showExtractedData,
     clearExtractedTransactions,
     setExtractedTransactions,
+    resetFormData,
   } = useTransactionStore();
 
   const handleFileUpload = useCallback(
@@ -70,8 +74,7 @@ const AddTransaction = () => {
       clearExtractedTransactions();
     },
     [bulkUpload, resetMessages, clearExtractedTransactions]
-);
-
+  );
 
   const handleCancel = useCallback(() => {
     resetMessages();
@@ -96,12 +99,23 @@ const AddTransaction = () => {
   );
 
   const handleSubmit = useCallback(
-    async (e) => {
+    (e) => {
+      console.log("Submitting transaction:");
       e.preventDefault();
-      await bulkUpload();
       resetMessages();
+
+      const validation = validateTransactionForm(formData);
+      if (!validation.isValid) {
+        useTransactionStore.setState({ error: validation.error });
+        return;
+      }
+
+      const transactionData = formatTransactionData(formData, activeTab);
+      addTransaction(transactionData, activeTab, resetForm, navigate);
+      resetFormData(getInitialFormData());
+      navigate("/transactions");
     },
-    [bulkUpload, resetMessages]
+    [formData, activeTab, addTransaction, navigate, resetMessages]
   );
 
   const resetForm = useCallback(() => {
