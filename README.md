@@ -3,7 +3,7 @@
 A simple personal finance assistant that helps you manage your expenses and income. This application allows you to track your financial transactions, categorize them, and generate reports to visualize your financial health.
 
 ## Demo link
-https://drive.google.com/file/d/18pzJNyBp-wbqFFh1o_vSTsDctHYR1rSG/view?usp=drive_link 
+https://drive.google.com/file/d/17fuV3MOQKBa2WUa1_fb8Kan0Z11glFhr/view?usp=drive_link
 
 ## Features
 - Add, edit, and delete transactions
