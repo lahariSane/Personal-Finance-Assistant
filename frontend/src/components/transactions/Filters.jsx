@@ -8,7 +8,8 @@ const Filters = ({
   onClearFilters,
   filteredCount,
   categories = [],
-  paymentMethods = []
+  paymentMethods = [],
+  sortOptions
 }) => {
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString("en-IN", {
@@ -93,6 +94,20 @@ const Filters = ({
             <option value="">All</option>
             {paymentMethods.map((method, idx) => (
               <option key={idx} value={method}>{method}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* sort by */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Sort by Date</label>
+          <select
+            value={filters.sort || "desc"}
+            onChange={(e) => onFilterChange("sort", e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+          >
+            {sortOptions.map((option, idx) => (
+              <option key={idx} value={option}>{option.charAt(0).toUpperCase() + option.slice(1)}</option>
             ))}
           </select>
         </div>

@@ -18,6 +18,7 @@ const Transactions = () => {
     category: "",
     type: "",
     paymentMethod: "",
+    sort: "",
   });
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
@@ -51,6 +52,12 @@ const Transactions = () => {
     }
   }, [user, fetchCurrentUser]);
 
+  useEffect(() => {
+    if (filters.sort === "asc" || filters.sort === "desc") {
+      setSortOrder(filters.sort);
+    }
+  }, [filters.sort]);
+
   // Fetch transactions when user or filters change
   useEffect(() => {
     const loadTransactions = async () => {
@@ -78,6 +85,7 @@ const Transactions = () => {
       category: "",
       type: "",
       paymentMethod: "",
+      sortOptions: "",
     });
   };
 
@@ -103,22 +111,35 @@ const Transactions = () => {
 
   // Filtered transactions
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((txn) => {
-      const txnDate = new Date(txn.date);
-      const from = filters.dateFrom ? new Date(filters.dateFrom) : null;
-      const to = filters.dateTo ? new Date(filters.dateTo) : null;
+    return transactions
+      .filter((txn) => {
+        const txnDate = new Date(txn.date);
+        const from = filters.dateFrom ? new Date(filters.dateFrom) : null;
+        const to = filters.dateTo ? new Date(filters.dateTo) : null;
 
-      const matchesDate = (!from || txnDate >= from) && (!to || txnDate <= to);
-      const matchesCategory =
-        !filters.category || txn.category === filters.category;
-      const matchesType = !filters.type || txn.type === filters.type;
-      const matchesPaymentMethod =
-        !filters.paymentMethod || txn.paymentMethod === filters.paymentMethod;
-
-      return (
-        matchesDate && matchesCategory && matchesType && matchesPaymentMethod
-      );
-    });
+        const matchesDate =
+          (!from || txnDate >= from) && (!to || txnDate <= to);
+        const matchesCategory =
+          !filters.category || txn.category === filters.category;
+        const matchesType = !filters.type || txn.type === filters.type;
+        const matchesPaymentMethod =
+          !filters.paymentMethod || txn.paymentMethod === filters.paymentMethod;
+        // Sorting is handled after filtering, not as a filter condition
+        return (
+          matchesDate && matchesCategory && matchesType && matchesPaymentMethod
+        );
+      })
+      .sort((a, b) => {
+        console.log(a.date, b.date, filters.sort);
+        const dateA = new Date(a.date);
+        const dateB = new Date(b.date);
+        if (filters.sort === "asc") {
+          return dateA - dateB;
+        } else {
+          return dateB - dateA;
+        }
+        return 0;
+      });
   }, [transactions, filters]);
 
   const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
@@ -188,6 +209,7 @@ const Transactions = () => {
           filteredCount={filteredTransactions.length}
           categories={categories}
           paymentMethods={paymentMethods}
+          sortOptions={["asc", "desc"]}
         />
 
         {/* Error Message */}
@@ -195,7 +217,7 @@ const Transactions = () => {
 
         {/* Table */}
         <TransactionTable
-          transactions={transactions}
+          transactions={filteredTransactions}
           loading={loading}
           selectedTransactions={selectedTransactions}
           onSelectTransaction={selectTransaction}

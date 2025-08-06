@@ -12,7 +12,7 @@ const receiptUploadHandler = async (req, res) => {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
     const filePath = req.file.path;
     const ext = path.extname(req.file.originalname).toLowerCase();
-    let ocrRawText = '';
+    let ocrRawText = '';3
     let confidence = 0.8;
     if (ext === '.pdf') {
       // Try to extract text from PDF
